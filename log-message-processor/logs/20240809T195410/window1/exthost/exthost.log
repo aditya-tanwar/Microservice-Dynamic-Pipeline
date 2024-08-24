@@ -1,0 +1,21 @@
+2024-08-09 19:54:13.614 [info] Extension host with pid 3764375 started
+2024-08-09 19:54:13.956 [info] ExtensionService#_doActivateExtension vscode.git-base, startup: true, activationEvent: '*', root cause: vscode.git
+2024-08-09 19:54:14.000 [info] ExtensionService#_doActivateExtension vscode.git, startup: true, activationEvent: '*'
+2024-08-09 19:54:14.073 [info] ExtensionService#_doActivateExtension vscode.github, startup: true, activationEvent: '*'
+2024-08-09 19:54:14.270 [info] Eager extensions activated
+2024-08-09 19:54:14.314 [info] ExtensionService#_doActivateExtension vscode.debug-auto-launch, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:14.316 [info] ExtensionService#_doActivateExtension vscode.merge-conflict, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:14.342 [info] ExtensionService#_doActivateExtension aaron-bond.better-comments, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:14.359 [info] ExtensionService#_doActivateExtension Codeium.codeium, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:14.737 [info] ExtensionService#_doActivateExtension Codium.codium, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:15.296 [info] ExtensionService#_doActivateExtension esbenp.prettier-vscode, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:15.396 [info] ExtensionService#_doActivateExtension formulahendry.code-runner, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:15.444 [info] ExtensionService#_doActivateExtension kennylong.kubernetes-yaml-formatter, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:15.446 [info] ExtensionService#_doActivateExtension PKief.material-icon-theme, startup: false, activationEvent: 'onStartupFinished'
+2024-08-09 19:54:19.942 [info] ExtensionService#_doActivateExtension vscode.markdown-language-features, startup: false, activationEvent: 'onCommand:markdown.showPreview'
+2024-08-09 19:54:20.365 [info] ExtensionService#_doActivateExtension vscode.extension-editing, startup: false, activationEvent: 'onLanguage:markdown'
+2024-08-09 19:54:20.383 [info] ExtensionService#_doActivateExtension vscode.emmet, startup: false, activationEvent: 'onLanguage'
+2024-08-09 19:54:20.404 [info] ExtensionService#_doActivateExtension vscode.markdown-math, startup: false, activationEvent: 'api', root cause: vscode.markdown-language-features
+2024-08-09 19:54:20.418 [info] ExtensionService#_doActivateExtension bierner.markdown-preview-github-styles, startup: false, activationEvent: 'api', root cause: vscode.markdown-language-features
+2024-08-09 19:54:22.991 [info] Extension host terminating: renderer closed the MessagePort
+2024-08-09 19:54:23.024 [info] Extension host with pid 3764375 exiting with code 0

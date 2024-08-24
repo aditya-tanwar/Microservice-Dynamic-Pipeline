@@ -1,0 +1,33 @@
+2024-08-09 19:54:13.579 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:13.607 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:13.726 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:13.769 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:13.927 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:14.028 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:14.181 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:14.271 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:14.399 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:14.491 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:15.617 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:15.727 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:15.736 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:16.403 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:17.826 [info] Getting Manifest... ms-azuretools.vscode-azurefunctions
+2024-08-09 19:54:17.872 [info] Installing extension: ms-azuretools.vscode-azurefunctions {"productVersion":{"version":"1.92.0","date":"2024-07-31T23:26:45.634Z"},"pinned":false,"isApplicationScoped":false,"profileLocation":{"$mid":1,"external":"vscode-userdata:/home/aditya-tanwar/.vscode/extensions/extensions.json","path":"/home/aditya-tanwar/.vscode/extensions/extensions.json","scheme":"vscode-userdata"},"installOnlyNewlyAddedFromExtensionPack":true}
+2024-08-09 19:54:17.896 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:18.178 [info] Getting Manifest... ms-azuretools.vscode-azureresourcegroups
+2024-08-09 19:54:18.211 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:18.236 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:20.687 [info] Extension signature verification result for ms-azuretools.vscode-azurefunctions: Success. Executed: true. Duration: 987ms.
+2024-08-09 19:54:21.345 [info] Extracted extension to file:///home/aditya-tanwar/.vscode/extensions/ms-azuretools.vscode-azurefunctions-1.15.2: ms-azuretools.vscode-azurefunctions
+2024-08-09 19:54:21.392 [info] Renamed to /home/aditya-tanwar/.vscode/extensions/ms-azuretools.vscode-azurefunctions-1.15.2
+2024-08-09 19:54:21.426 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:21.443 [info] Marked extension as uninstalled ms-azuretools.vscode-azurefunctions-1.15.1
+2024-08-09 19:54:21.458 [info] Extension installed successfully: ms-azuretools.vscode-azurefunctions vscode-userdata:/home/aditya-tanwar/.vscode/extensions/extensions.json
+2024-08-09 19:54:21.509 [error] [uncaught exception in sharedProcess]: Error: ENOENT: no such file or directory, stat '/home/aditya-tanwar/.vscode/extensions/extensions.json.vsctmp': EntryNotFound (FileSystemError): Error: ENOENT: no such file or directory, stat '/home/aditya-tanwar/.vscode/extensions/extensions.json.vsctmp'
+    at o.create (/usr/share/code/resources/app/out/vs/code/node/sharedProcess/sharedProcessMain.js:54:19408)
+    at u (/usr/share/code/resources/app/out/vs/code/node/sharedProcess/sharedProcessMain.js:54:19519)
+    at p.hb (/usr/share/code/resources/app/out/vs/code/node/sharedProcess/sharedProcessMain.js:59:36714)
+    at p.stat (/usr/share/code/resources/app/out/vs/code/node/sharedProcess/sharedProcessMain.js:59:29034)
+    at async c.stat (/usr/share/code/resources/app/out/vs/code/node/sharedProcess/sharedProcessMain.js:59:14940)
+    at async z.ub (/usr/share/code/resources/app/out/vs/code/node/sharedProcess/sharedProcessMain.js:105:120384)

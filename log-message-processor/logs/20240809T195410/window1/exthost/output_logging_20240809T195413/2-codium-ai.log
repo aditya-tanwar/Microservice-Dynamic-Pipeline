@@ -1,0 +1,14 @@
+["INFO" - 7:54:15 PM] Installation id not found, created a new one.
+"03077ce3-4400-4a42-8a51-9afce5ac6163"
+["DEBUG" - 7:54:16 PM] Initializing db
+"."
+["INFO" - 7:54:16 PM] Finished registering uri handler
+["DEBUG" - 7:54:16 PM] Registered uninstall hook.
+["DEBUG" - 7:54:23 PM] Deactivating Codium provider
+"2024-08-09T14:24:23.007Z"
+["ERROR" - 7:54:23 PM] auth_service.ts:login error
+{
+  "error": {
+    "name": "Canceled"
+  }
+}

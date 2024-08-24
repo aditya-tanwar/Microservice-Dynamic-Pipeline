@@ -1,0 +1,4 @@
+2024-08-09 19:54:13.132 [info] Started local extension host with pid 3764375.
+2024-08-09 19:54:13.418 [warning] [vscode-azurefunctions]: Couldn't find message for key azureFunctions.showFlexEventGridWarning.
+2024-08-09 19:54:13.576 [warning] [redhat.vscode-yaml]: Cannot register 'redhat.telemetry.enabled'. This property is already registered.
+2024-08-09 19:54:16.323 [info] [perf] Render performance baseline is 38ms
