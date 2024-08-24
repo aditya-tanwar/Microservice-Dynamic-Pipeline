@@ -1,0 +1,8 @@
+# test-config.yaml
+steps:
+  - name: Compile
+    command: mvn compile
+  - name: Test
+    command: mvn test
+  - name: Package
+    command: mvn package

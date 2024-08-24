@@ -1,0 +1,313 @@
+pipeline {
+    agent any
+
+    options {
+    	skipDefaultCheckout true
+  	}
+    
+
+    parameters {
+                string( name: 'branch', defaultValue: 'test', description: 'Branch of code to be deployed')
+                string( name: 'app_version', defaultValue: '', description: 'Application version to build') 
+                 
+    }
+
+    environment {
+
+        NEXUS_URL = "192.168.0.104:8082"
+    }
+
+
+    stages {
+
+        // stage("test"){
+        //     steps{
+        //         sh 'echo ${appversion}'
+        //     }
+        // }
+
+        stage("Cleaning the Workspace before starting further steps"){
+            steps{
+                cleanWs() // This is a jenkins inbuild function that is used to clean the workspace.
+            }
+        } // End of the Cleaning Workspace stage
+
+
+        stage('Git-Checkout') {
+            steps {
+                git credentialsId: 'git', poll: false, url: 'https://github.com/aditya-tanwar/microservice-app-example-01.git', branch: env.BRANCH_NAME
+                sh 'mkdir TEST-RESULTS'
+            }
+        }
+
+
+
+
+        stage('Trivy Scan') {
+          steps {
+           // Run Trivy filesystem scan
+           sh 'trivy fs . --format json --output trivy-results.json'
+          }
+       }
+
+
+
+
+        // stage('SonarQube Code Analysis') {
+  
+        //                 environment {
+        //                     scannerHome = tool 'sonar'
+        //                 }
+        //                 steps { 
+        //                     script {
+        //                     withSonarQubeEnv('sonar') {
+        //                         sh ''' ${scannerHome}/bin/sonar-scanner \
+        //                                 -Dsonar.projectKey=microservice \
+        //                                 -Dsonar.projectName=microservice \
+        //                                 -Dsonar.java.binaries=. '''
+        //                     }
+        //                 }
+        //             } 
+        //         }
+
+        // stage("Quality Gate") {
+        //     steps {
+        //             waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube'
+        //     }
+        // }
+  
+        
+        stage('OWASP Dependency Check') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'owasp'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+               }
+}
+
+
+        stage('Image Building phase') {
+            parallel {
+
+                stage('build phase for log-message-processor') {
+                    stages {
+                        stage('Building docker image') {
+                            steps {
+
+                                sh 'docker build -t log-message-processor-`date +"%F"`:v${app_version} log-message-processor/'
+
+                            }
+                        }
+                        stage('Scanning the docker image') {
+                            steps {
+
+                                sh '''
+
+                                    trivy image --scanners vuln,misconfig,secret log-message-processor-$(date +"%F"):v${app_version} --format json -o TEST-RESULTS/trivy-log-message-processor-$(date +"%F")-v${app_version}.json
+                                    dockle -f json log-message-processor-$(date +"%F"):v${app_version} > TEST-RESULTS/dockle-log-message-processor-$(date +"%F")-v${app_version}.json
+
+                                '''
+
+                            }
+                        }
+                        stage('Tagging & Pushing image') {
+                            steps {
+                                sh '''
+                                    if [ $( cat TEST-RESULTS/dockle-log-message-processor-$(date +"%F")-v${app_version}.json | jq -r '.summary.fatal' ) -lt 3 ]; then
+                                        docker tag log-message-processor-$(date +"%F"):v${app_version} ${NEXUS_URL}/log-message-processor-$(date +"%F"):v${app_version}
+                                    else
+                                        echo "Docker image build failed , Please check the trivy and Dockle reports for troubleshooting"
+                                    fi
+                                '''
+                                sh "echo 'Pushing image to docker hosted rerpository on Nexus'"
+
+                                withCredentials([usernamePassword(credentialsId: 'nexuslogin', passwordVariable: 'PSW', usernameVariable: 'USER')]){
+                                sh "echo ${PSW} | docker login -u ${USER} --password-stdin ${NEXUS_URL}"
+                                sh 'docker push ${NEXUS_URL}/log-message-processor-$(date +"%F"):v${app_version}'
+                            }
+                        }
+                    }
+
+                } 
+            }
+
+                stage('build phase for auth-api') {
+                    stages {
+                        stage('Building docker image') {
+                            steps {
+
+                                sh 'docker build -t auth-api-$(date +"%F"):v${app_version} auth-api/'
+
+                            }
+                        }
+                        stage('Scanning the docker image') {
+                            steps {
+
+                                sh '''
+                                    trivy image --scanners vuln,misconfig,secret auth-api-$(date +"%F"):v${app_version} --format json -o TEST-RESULTS/trivy-auth-api-$(date +"%F")-v${app_version}.json
+                                    dockle -f json auth-api-$(date +"%F"):v${app_version} > TEST-RESULTS/dockle-auth-api-$(date +"%F")-v${app_version}.json
+
+                                '''
+
+                            }
+                        }
+                        stage('Tagging image') {
+                            steps {
+                                sh '''
+                                    if [ $( cat TEST-RESULTS/dockle-auth-api-$(date +"%F")-v${app_version}.json | jq -r '.summary.fatal') -lt 3 ]; then
+                                        docker tag auth-api-$(date +"%F"):v${app_version} ${NEXUS_URL}/auth-api-$(date +"%F"):v${app_version}
+                                    else
+                                        echo "Docker image build failed , Please check the trivy and Dockle reports for troubleshooting"
+                                    fi
+                                '''
+                                sh "echo 'Pushing image to docker hosted rerpository on Nexus'"
+
+                                withCredentials([usernamePassword(credentialsId: 'nexuslogin', passwordVariable: 'PSW', usernameVariable: 'USER')]){
+                                sh "echo ${PSW} | docker login -u ${USER} --password-stdin ${NEXUS_URL}"
+                                sh 'docker push ${NEXUS_URL}/auth-api-$(date +"%F"):v${app_version}'
+                                    
+                            }
+                        }
+                    }
+                
+                }
+                }
+
+                stage('build phase for frontend') {
+                    stages {
+                        stage('Building docker image') {
+                            steps {
+
+                                sh 'docker build -t frontend-$(date +"%F"):v${app_version} frontend/'
+
+                            }
+                        }
+                        stage('Scanning the docker image') {
+                            steps {
+
+                                sh '''
+                                    trivy image --scanners vuln,misconfig,secret frontend-$(date +"%F"):v${app_version} --format json -o TEST-RESULTS/trivy-frontend-$(date +"%F")-v${app_version}.json
+                                    dockle -f json frontend-$(date +"%F"):v${app_version} > TEST-RESULTS/dockle-frontend-$(date +"%F")-v${app_version}.json
+
+                                '''
+
+                            }
+                        }
+                        stage('Tagging image') {
+                            steps {
+                                sh '''
+                                    if [ $( cat TEST-RESULTS/dockle-frontend-$(date +"%F")-v${app_version}.json | jq -r '.summary.fatal') -lt 3 ]; then
+                                        docker tag frontend-$(date +"%F"):v${app_version} ${NEXUS_URL}/frontend-$(date +"%F"):v${app_version}
+                                    else
+                                        echo "Docker image build failed , Please check the trivy and Dockle reports for troubleshooting"
+                                    fi
+                                '''
+                                sh "echo 'Pushing image to docker hosted rerpository on Nexus'"
+
+                                withCredentials([usernamePassword(credentialsId: 'nexuslogin', passwordVariable: 'PSW', usernameVariable: 'USER')]){
+                                sh "echo ${PSW} | docker login -u ${USER} --password-stdin ${NEXUS_URL}"
+                                sh 'docker push ${NEXUS_URL}/frontend-$(date +"%F"):v${app_version}'
+                            }
+                        }
+                    }
+                
+                }
+                }
+
+                stage('build phase for users-api') {
+                    stages {
+                        stage('Building docker image') {
+                            steps {
+
+                                sh 'docker build -t users-api-$(date +"%F"):v${app_version} users-api/'
+
+                            }
+                        }
+                        stage('Scanning the docker image') {
+                            steps {
+
+                                sh '''
+                                    trivy image --scanners vuln,misconfig,secret users-api-$(date +"%F"):v${app_version} --format json -o TEST-RESULTS/trivy-users-api-$(date +"%F")-v${app_version}.json
+                                    dockle -f json users-api-$(date +"%F"):v${app_version} > TEST-RESULTS/dockle-users-api-$(date +"%F")-v${app_version}.json
+
+                                '''
+
+                            }
+                        }
+                        stage('Tagging image') {
+                            steps {
+                                sh '''
+                                    if [ $( cat TEST-RESULTS/dockle-users-api-$(date +"%F")-v${app_version}.json | jq -r  '.summary.fatal') -lt 3 ]; then
+                                        docker tag users-api-$(date +"%F"):v${app_version} ${NEXUS_URL}/users-api-$(date +"%F"):v${app_version}
+                                    else
+                                        echo "Docker image build failed , Please check the trivy and Dockle reports for troubleshooting"
+                                    fi
+                                '''
+                                sh "echo 'Pushing image to docker hosted rerpository on Nexus'"
+
+                                withCredentials([usernamePassword(credentialsId: 'nexuslogin', passwordVariable: 'PSW', usernameVariable: 'USER')]){
+                                sh "echo ${PSW} | docker login -u ${USER} --password-stdin ${NEXUS_URL}"
+                                sh 'docker push ${NEXUS_URL}/users-api-$(date +"%F"):v${app_version}'
+                            }
+                        }
+                    }
+                
+                }
+              }
+        
+                stage('build phase for todos-api') {
+                    stages {
+                        stage('Building docker image') {
+                            steps {
+
+                                sh 'docker build -t todos-api-$(date +"%F"):v${app_version} todos-api/'
+
+                            }
+                        }
+                        stage('Scanning the docker image') {
+                            steps {
+
+                                sh '''
+                                    trivy image --scanners vuln,misconfig,secret todos-api-$(date +"%F"):v${app_version} --format json -o TEST-RESULTS/trivy-todos-api-$(date +"%F")-v${app_version}.json
+                                    dockle -f json todos-api-$(date +"%F"):v${app_version} > TEST-RESULTS/dockle-todos-api-$(date +"%F")-v${app_version}.json
+
+                                '''
+
+                            }
+                        }
+                        stage('Tagging image') {
+                            steps {
+                                sh '''
+                                    if [ $( cat TEST-RESULTS/dockle-todos-api-$(date +"%F")-v${app_version}.json | jq -r '.summary.fatal' ) -lt 3 ]; then
+                                        docker tag todos-api-$(date +"%F"):v${app_version} ${NEXUS_URL}/todos-api-$(date +"%F"):v${app_version}
+                                    else
+                                        echo "Docker image build failed , Please check the trivy and Dockle reports for troubleshooting"
+                                    fi
+                                '''
+                                sh "echo 'Pushing image to docker hosted rerpository on Nexus'"
+
+                                withCredentials([usernamePassword(credentialsId: 'nexuslogin', passwordVariable: 'PSW', usernameVariable: 'USER')]){
+                                sh "echo ${PSW} | docker login -u ${USER} --password-stdin ${NEXUS_URL}"
+                                sh 'docker push ${NEXUS_URL}/todos-api-$(date +"%F"):v${app_version}'
+                            }
+                        }
+                    }
+                }
+            }                    
+        }      
+    }
+        
+    stage("Docker Clean up - POST"){
+        steps {
+            sh '''
+                docker system prune -af
+            '''
+        }
+    }
+
+    stage("Updating the k8s manifests"){
+        steps {
+            sh './k8s-update.sh ${NEXUS_URL} ${app_version}'
+        }
+    }
+  }
+}
