@@ -1,4 +1,4 @@
-// testing
+// testing jenkins
 def testSuites = ['service1', 'service2', 'service3']
 def substages = ['substage1', 'substage2', 'substage3']
 
